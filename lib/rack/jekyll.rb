@@ -1,4 +1,5 @@
 require "rack"
+require "erb"
 require "yaml"
 require "rack/request"
 require "rack/response"
@@ -13,7 +14,7 @@ module Rack
     def initialize(opts = {})
       config_file = '_config.yml'
       if ::File.exist?(config_file)
-        config = YAML.load_file(config_file)
+        config = YAML.load(ERB.new(::File.read(config_file)).result)
         @path = (config['destination'].nil? && "_site") || config['destination']
 
         @files = ::Dir[@path + "/**/*"].inspect
